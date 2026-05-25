@@ -1,0 +1,172 @@
+body {
+  margin: 0;
+  background: #f6f8fa;
+  color: #1f2328;
+  font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+main {
+  max-width: 720px;
+  margin: 32px auto;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-size: 22px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.notice {
+  padding: 12px;
+  background: #fff8c5;
+  border: 1px solid #d4a72c;
+  border-radius: 6px;
+}
+
+form {
+  display: grid;
+  gap: 14px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-note {
+  margin: 8px 0 0;
+  color: #57606a;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox input {
+  width: auto;
+}
+
+.model-configs-section {
+  display: grid;
+  gap: 12px;
+}
+
+.model-configs {
+  display: grid;
+  gap: 12px;
+}
+
+.model-config-card {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+}
+
+.model-config-card.is-collapsed .model-config-body {
+  display: none;
+}
+
+.model-config-card.is-collapsed .model-config-summary {
+  display: grid;
+}
+
+.model-config-card.is-expanded .model-config-summary {
+  display: none;
+}
+
+.model-config-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.model-config-summary {
+  display: none;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #f6f8fa;
+}
+
+.model-config-summary-name {
+  font-weight: 600;
+}
+
+.model-config-summary-url {
+  color: #57606a;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.model-config-body {
+  display: grid;
+  gap: 12px;
+}
+
+.select-config {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.select-config input {
+  width: auto;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  padding: 8px 14px;
+  border: 1px solid #1f883d;
+  border-radius: 6px;
+  background: #1f883d;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+button[type="button"] {
+  border-color: #d0d7de;
+  background: #f6f8fa;
+  color: #1f2328;
+}
+
+#status {
+  min-height: 20px;
+  color: #0969da;
+}

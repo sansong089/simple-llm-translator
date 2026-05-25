@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LLM Web Translator 设置</title>
+    <link rel="stylesheet" href="./options.css" />
+  </head>
+  <body>
+    <main>
+      <h1>翻译设置</h1>
+      <p class="notice">翻译时，选中文本或网页文本会发送到你配置的模型服务商。插件不会把内容发送到作者服务器。</p>
+      <form id="settings-form">
+        <section class="model-configs-section">
+          <div class="section-header">
+            <h2>模型接口</h2>
+            <button id="addModelConfig" type="button">新增接口</button>
+          </div>
+          <p class="section-note">请求路径固定为 <code>/chat/completions</code>，这里只配置不同服务商的 Base URL、API Key 和模型名。</p>
+          <div id="modelConfigs" class="model-configs"></div>
+        </section>
+        <label>目标语言 <input id="targetLanguage" name="targetLanguage" placeholder="中文" /></label>
+        <label>请求超时(ms) <input id="requestTimeoutMs" name="requestTimeoutMs" type="number" min="1" /></label>
+        <label>单批最大原文字符数（模型窗口保护） <input id="maxCharsPerBatch" name="maxCharsPerBatch" type="number" min="1" /></label>
+        <div class="actions">
+          <button type="submit">保存</button>
+          <button id="test" type="button">测试连接</button>
+        </div>
+      </form>
+      <p id="status" role="status"></p>
+    </main>
+    <template id="model-config-template">
+      <fieldset class="model-config-card">
+        <div class="model-config-card-header">
+          <label class="select-config">
+            <input class="model-config-selected" name="selectedModelConfig" type="radio" />
+            设为当前使用接口
+          </label>
+          <button class="remove-model-config" type="button">删除</button>
+        </div>
+        <div class="model-config-summary">
+          <span class="model-config-summary-name"></span>
+          <span class="model-config-summary-url"></span>
+        </div>
+        <div class="model-config-body">
+          <label>接口名称 <input class="model-config-name" placeholder="OpenAI 官方" /></label>
+          <label>Base URL <input class="model-config-base-url" placeholder="https://api.openai.com/v1" /></label>
+          <label>API Key <input class="model-config-api-key" type="password" /></label>
+          <label>Model <input class="model-config-model" placeholder="gpt-4o-mini" /></label>
+          <label class="checkbox"><input class="model-config-json-output-mode" type="checkbox" /> 启用 response_format JSON 模式</label>
+        </div>
+      </fieldset>
+    </template>
+    <script type="module" src="./options.js"></script>
+  </body>
+</html>

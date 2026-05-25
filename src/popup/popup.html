@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LLM Web Translator</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <main>
+      <h1>网页翻译</h1>
+      <dl>
+        <div><dt>配置</dt><dd id="configured">检查中</dd></div>
+        <div><dt>当前页</dt><dd id="page-status">检查中</dd></div>
+      </dl>
+      <button id="translate">翻译当前页面</button>
+      <button id="stop">停止翻译</button>
+      <button id="options">打开配置</button>
+      <p id="message"></p>
+    </main>
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>
