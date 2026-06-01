@@ -40,7 +40,7 @@ npm run build
 
 - **Base URL**：API 地址，比如 `https://api.openai.com/v1`
 - **API Key**：你的 Key
-- **Model**：模型名，比如 `gpt-4o-mini`
+- **Model**：模型名，比如 `gpt-5.4`
 
 点"测试连接"验证一下，没问题就保存。
 
