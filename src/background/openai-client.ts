@@ -202,7 +202,6 @@ function buildRequestBody(
   const body: Record<string, unknown> = {
     model,
     temperature: 0,
-    reasoning_effort: "none",
     messages: [
       { role: "system", content: preferStreaming ? STREAM_SYSTEM_PROMPT : JSON_SYSTEM_PROMPT },
       { role: "user", content: buildUserPayload(targetLanguage, segments) }

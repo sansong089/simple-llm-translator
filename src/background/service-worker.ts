@@ -78,6 +78,9 @@ async function startPageTranslation(tabId: number, frameId: number): Promise<{ o
     await chrome.runtime.openOptionsPage();
     return { ok: false, error: "SETTINGS_INCOMPLETE" };
   }
+  if (!(await ensureContentScript(tabId, { allFrames: true }))) {
+    return { ok: false, error: "UNSUPPORTED_PAGE" };
+  }
 
   const runId = createRunId();
   setFrameRunning(tabId, frameId, runId);
@@ -111,6 +114,9 @@ async function translateSelection(tabId: number, frameId: number, selectionText:
   const settings = await getSettings();
   if (!isConfigured(settings)) {
     await chrome.runtime.openOptionsPage();
+    return;
+  }
+  if (!(await ensureContentScript(tabId, { frameIds: [frameId] }))) {
     return;
   }
 
@@ -166,10 +172,12 @@ async function handleTranslateBatch(
 
 async function getTabStatus(message: GetTabStatusMessage): Promise<TabStatusMessage> {
   const settings = await getSettings();
+  const tab = await chrome.tabs.get(message.tabId).catch(() => undefined);
+  const pageAvailable = isSupportedTab(tab);
   const frames = await queryRunnerStatuses(message.tabId);
   return {
     type: "TAB_STATUS",
-    status: getAggregatedStatus(isConfigured(settings), true, frames)
+    status: getAggregatedStatus(isConfigured(settings), pageAvailable, frames)
   };
 }
 
@@ -249,4 +257,24 @@ async function sendBatchDone(tabId: number, message: TranslateBatchStreamDoneMes
   } catch {
     // Ignore frames that disappeared before stream finished.
   }
+}
+
+async function ensureContentScript(
+  tabId: number,
+  target: Omit<chrome.scripting.InjectionTarget, "tabId">
+): Promise<boolean> {
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId, ...target },
+      files: ["content/content-script.js"]
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function isSupportedTab(tab: chrome.tabs.Tab | undefined): boolean {
+  const url = tab?.url ?? "";
+  return url.startsWith("http://") || url.startsWith("https://");
 }

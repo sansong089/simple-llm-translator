@@ -11,45 +11,59 @@ import { BUILD_ID } from "../shared/build-info";
 import { rememberSelectionRect, showFloatingPanel } from "./floating-panel";
 import { TranslationRunner } from "./translation-runner";
 
-const runner = new TranslationRunner();
-(window as unknown as { __LLM_TRANSLATOR_LOADED?: boolean }).__LLM_TRANSLATOR_LOADED = true;
+type TranslatorWindow = Window & {
+  __LLM_TRANSLATOR_LOADED?: boolean;
+  __LLM_TRANSLATOR_RUNNER?: TranslationRunner;
+};
 
-chrome.runtime.onMessage.addListener((message: Message, _sender, sendResponse) => {
-  switch (message.type) {
-    case "CONTENT_START_PAGE_TRANSLATION":
-      handleStart(message);
-      sendResponse({ ok: true });
-      return true;
-    case "CONTENT_STOP_PAGE_TRANSLATION":
-      handleStop(message);
-      sendResponse({ ok: true });
-      return true;
-    case "SHOW_FLOATING_PANEL":
-      handleFloatingPanel(message);
-      sendResponse({ ok: true });
-      return true;
-    case "TRANSLATE_BATCH_STREAM_CHUNK":
-      handleBatchStreamChunk(message);
-      sendResponse({ ok: true });
-      return true;
-    case "TRANSLATE_BATCH_STREAM_DONE":
-      handleBatchStreamDone(message);
-      sendResponse({ ok: true });
-      return true;
-    case "QUERY_RUNNER_STATUS":
-      sendResponse(handleQueryStatus(message));
-      return true;
-    case "GET_BUILD_INFO":
-      sendResponse({ ok: true, buildId: BUILD_ID });
-      return true;
-    default:
-      return false;
-  }
-});
+const translatorWindow = window as TranslatorWindow;
+const runner = translatorWindow.__LLM_TRANSLATOR_RUNNER ?? new TranslationRunner();
 
-document.addEventListener("contextmenu", () => {
-  rememberSelectionRect();
-}, true);
+if (!translatorWindow.__LLM_TRANSLATOR_LOADED) {
+  translatorWindow.__LLM_TRANSLATOR_LOADED = true;
+  translatorWindow.__LLM_TRANSLATOR_RUNNER = runner;
+
+  chrome.runtime.onMessage.addListener((message: Message, _sender, sendResponse) => {
+    switch (message.type) {
+      case "CONTENT_START_PAGE_TRANSLATION":
+        handleStart(message);
+        sendResponse({ ok: true });
+        return true;
+      case "CONTENT_STOP_PAGE_TRANSLATION":
+        handleStop(message);
+        sendResponse({ ok: true });
+        return true;
+      case "SHOW_FLOATING_PANEL":
+        handleFloatingPanel(message);
+        sendResponse({ ok: true });
+        return true;
+      case "TRANSLATE_BATCH_STREAM_CHUNK":
+        handleBatchStreamChunk(message);
+        sendResponse({ ok: true });
+        return true;
+      case "TRANSLATE_BATCH_STREAM_DONE":
+        handleBatchStreamDone(message);
+        sendResponse({ ok: true });
+        return true;
+      case "QUERY_RUNNER_STATUS":
+        sendResponse(handleQueryStatus(message));
+        return true;
+      case "GET_BUILD_INFO":
+        sendResponse({ ok: true, buildId: BUILD_ID });
+        return true;
+      default:
+        return false;
+    }
+  });
+
+  document.addEventListener(
+    "contextmenu",
+    () => {
+      rememberSelectionRect();
+    },
+    true
+  );
+}
 
 function handleStart(message: ContentStartPageTranslationMessage): void {
   runner.start(message.runId, message.frameId, message.settingsView);

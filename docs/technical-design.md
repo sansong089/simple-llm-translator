@@ -1,4 +1,4 @@
-# 技术设计：基于大模型的 Chrome 网页翻译插件
+# 技术设计：Simple LLM Translator
 
 状态：草稿
 日期：2026-05-21
@@ -107,21 +107,10 @@ chrome-translator/
     "scripting",
     "tabs"
   ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
   "background": {
     "service_worker": "background/service-worker.js",
     "type": "module"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content/content-script.js"],
-      "run_at": "document_idle",
-      "all_frames": true
-    }
-  ],
   "action": {
     "default_popup": "popup/popup.html"
   },
@@ -131,29 +120,25 @@ chrome-translator/
 
 说明：
 
-- `all_frames: true` 用于尽量覆盖 iframe。
-- content script 默认注入所有页面，但不会自动翻译，只监听消息。
-- `activeTab` 用于用户触发后的当前页操作。
-- `tabs` 用于 popup/background 判断当前 tab URL 和受限页面状态。
-- `host_permissions` 如果后续上架需要收紧，可改为用户授权站点模式。V1 本地开发先按全站能力设计。
+- `activeTab` 用于用户触发后的当前页或当前 frame 注入。
+- `scripting` 用于在用户操作后动态注入 `content-script.js`。
+- `tabs` 用于 popup/background 判断当前 tab URL、受限页面状态，以及消息路由。
 
 ### 权限与注入策略
 
-V1 先面向本地开发和内部分发，采用静态 content script 注入：
+发布版采用最小权限策略，按用户操作动态注入 content script：
 
-- `matches: ["<all_urls>"]`
-- `all_frames: true`
-- `host_permissions: ["<all_urls>"]`
+- 默认不声明静态 `content_scripts`
+- 默认不声明 `host_permissions: ["<all_urls>"]`
+- 用户点击 popup 或右键菜单后，通过 `activeTab` + `chrome.scripting.executeScript` 注入目标 tab 或 frame
 
 选择这个策略的原因：
 
-- 页面翻译需要覆盖 iframe、动态页面和滚动增量内容。
-- 实现简单，便于先把 DOM 翻译运行时打稳定。
-- 行为上仍然保持用户手动触发，页面打开后不自动扫描、不自动翻译、不发送页面文本。
+- 可以显著降低 `<all_urls>` 和全站预注入带来的商店审核风险。
+- 行为上保持用户手动触发，页面打开后不自动扫描、不自动翻译、不发送页面文本。
+- 仍然可以在用户触发后覆盖当前目标页面的 DOM 翻译流程。
 
-如果后续面向 Chrome Web Store 上架，再单独做最小权限版本：去掉静态全站注入，改为用户点击右键或 popup 后，通过 `activeTab` + `chrome.scripting.executeScript` 注入当前 tab。该路线不作为 V1 当前实现目标。
-
-Options 页面必须明确说明：插件脚本可运行在网页中，但只有用户手动触发翻译时才会发送文本到用户配置的模型服务商。
+Options 页面必须明确说明：只有用户手动触发翻译时，插件才会发送文本到用户配置的模型服务商，并提供可访问的隐私政策页面。
 
 ## 核心模块
 
@@ -722,8 +707,8 @@ V1 建议只做 tab 内缓存。原因很简单：网页文本可能敏感，持
 
 ```json
 {
-  "model": "用户配置模型",
   "temperature": 0,
+  "model": "用户配置模型",
   "stream": true,
   "messages": [
     { "role": "system", "content": "..." },
@@ -834,15 +819,15 @@ Popup 启动时：
 - content script 不接收、不缓存、不打印 API Key。
 - 页面文本只发送给用户配置的 Base URL。
 - 插件不把用户网页内容发送到插件作者服务器。
+- 插件不把网页翻译原文、译文或模型原始响应持久化保存到 `chrome.storage.local`。
 - 日志和错误提示必须脱敏。
-- 调试用翻译诊断日志写入 `chrome.storage.local` 时必须串行化，避免并发批次完成时互相覆盖真实请求输入输出。
-- 调试诊断日志写入不得阻塞批次完成后的 chunk/done 收口；日志可以后台补写，但页面翻译状态必须先结束。
 - 真实浏览器诊断可通过内部 `GET_BUILD_INFO` 消息核对 background/content 是否来自当前构建。
 - 悬浮框 DOM 不包含 API 配置。
+- 仓库文档提供正式隐私政策：`docs/privacy-policy.md`。
 
 需要在 options 页面展示简短说明：
 
-> 翻译时，选中文本或网页文本会发送到你配置的模型服务商。插件不会把内容发送到作者服务器。
+> 只有在你手动触发翻译时，选中文本或网页文本才会发送到你配置的模型服务商。插件不会把网页文本发送到作者服务器，也不会持久化保存网页翻译内容。
 
 ## 错误处理
 

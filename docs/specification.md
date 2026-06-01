@@ -1,4 +1,4 @@
-# 规格文档：基于大模型的 Chrome 网页翻译插件 V1
+# 规格文档：Simple LLM Translator V1
 
 状态：草稿
 日期：2026-05-21
@@ -87,17 +87,16 @@ dist/
 - `activeTab`
 - `scripting`
 - `tabs`
-- `host_permissions: ["<all_urls>"]`
-- `content_scripts[].all_frames = true`
 
 ### SPEC-MANIFEST-002：手动触发约束
 
-content script 可以静态注入所有页面，但不得在页面打开后自动扫描、自动翻译或自动发送页面文本。
+content script 不得静态预注入所有页面。必须在用户点击 popup、右键菜单等明确操作后，通过 `activeTab` + `chrome.scripting.executeScript` 动态注入到目标 tab 或 frame。
 
 验收：
 
 - 打开任意普通网页后，不发生模型 API 请求。
 - 打开任意普通网页后，页面 DOM 文本不被修改。
+- 打开任意普通网页后，未触发翻译前不存在扩展注入的运行态逻辑。
 
 ### SPEC-MANIFEST-003：受限页面
 
@@ -200,7 +199,7 @@ https://api.openai.com/v1/chat/completions
 
 Options 页面必须展示：
 
-> 翻译时，选中文本或网页文本会发送到你配置的模型服务商。插件不会把内容发送到作者服务器。
+> 只有在你手动触发翻译时，选中文本或网页文本才会发送到你配置的模型服务商。插件不会把网页文本发送到作者服务器，也不会持久化保存网页翻译内容。
 
 ## 5. 消息协议规格
 
@@ -753,8 +752,8 @@ https://api.openai.com/v1/chat/completions
 
 ```json
 {
-  "model": "<selectedModelConfig.model>",
   "temperature": 0,
+  "model": "<selectedModelConfig.model>",
   "stream": true,
   "messages": [
     { "role": "system", "content": "<system prompt>" },
@@ -801,8 +800,8 @@ https://api.openai.com/v1/chat/completions
 sk-****abcd
 ```
 
-调试诊断日志如果记录真实批次输入输出，必须保证并发追加不丢失条目；同一次页面翻译的多个并发批次都应可追溯。
-调试诊断日志写入不得阻塞页面翻译的 chunk/done 回传或 runner 完成态收口。
+不得把网页翻译原文、网页翻译结果或模型原始响应持久化写入 `chrome.storage.local`。
+如果后续需要诊断能力，必须默认关闭，并且不得在未明确告知用户的情况下长期保存网页文本。
 
 真实浏览器诊断允许读取内部 `GET_BUILD_INFO` 消息返回的构建标记，用于确认页面 content script 和 background service worker 已加载当前构建。
 

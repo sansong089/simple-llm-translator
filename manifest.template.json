@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "LLM Web Translator",
+  "name": "Simple LLM Translator",
   "version": "0.1.0",
   "description": "Translate webpage DOM text with a user-configured OpenAI-compatible API.",
   "permissions": ["contextMenus", "storage", "activeTab", "scripting", "tabs"],
@@ -9,16 +9,8 @@
     "service_worker": "background/service-worker.js",
     "type": "module"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content/content-script.js"],
-      "run_at": "document_idle",
-      "all_frames": true
-    }
-  ],
   "action": {
-    "default_title": "LLM Web Translator",
+    "default_title": "Simple LLM Translator",
     "default_popup": "popup/popup.html"
   },
   "options_page": "options/options.html"

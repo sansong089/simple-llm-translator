@@ -1,8 +1,9 @@
 import { copyFileSync, mkdirSync, rmSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { build } from "esbuild";
 
-const root = resolve(new URL("..", import.meta.url).pathname.slice(1));
+const root = fileURLToPath(new URL("..", import.meta.url));
 const dist = resolve(root, "dist");
 
 rmSync(dist, { recursive: true, force: true });
@@ -17,6 +18,7 @@ copy("src/popup/popup.html", "popup/popup.html");
 copy("src/popup/popup.css", "popup/popup.css");
 copy("src/options/options.html", "options/options.html");
 copy("src/options/options.css", "options/options.css");
+copy("src/privacy/privacy-policy.html", "privacy/privacy-policy.html");
 
 async function buildEntry(entry, outfile, format) {
   const output = resolve(dist, outfile);

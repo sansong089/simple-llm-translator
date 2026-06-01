@@ -3,20 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LLM Web Translator 设置</title>
+    <title>Simple LLM Translator 设置</title>
     <link rel="stylesheet" href="./options.css" />
   </head>
   <body>
     <main>
       <h1>翻译设置</h1>
-      <p class="notice">翻译时，选中文本或网页文本会发送到你配置的模型服务商。插件不会把内容发送到作者服务器。</p>
+      <p class="notice">只有在你手动触发翻译时，选中文本或网页文本才会发送到你配置的模型服务商。插件不会把网页文本发送到作者服务器，也不会持久化保存网页翻译内容。</p>
       <form id="settings-form">
         <section class="model-configs-section">
           <div class="section-header">
             <h2>模型接口</h2>
             <button id="addModelConfig" type="button">新增接口</button>
           </div>
-          <p class="section-note">请求路径固定为 <code>/chat/completions</code>，这里只配置不同服务商的 Base URL、API Key 和模型名。</p>
+          <p class="section-note">请求路径固定为 <code>/chat/completions</code>，这里只配置不同服务商的 Base URL、API Key 和模型名。上架版本按用户操作动态注入页面脚本，不再默认全站预注入。</p>
           <div id="modelConfigs" class="model-configs"></div>
         </section>
         <label>目标语言 <input id="targetLanguage" name="targetLanguage" placeholder="中文" /></label>
@@ -27,6 +27,7 @@
           <button id="test" type="button">测试连接</button>
         </div>
       </form>
+      <p><a href="../privacy/privacy-policy.html" target="_blank" rel="noreferrer">查看隐私政策</a></p>
       <p id="status" role="status"></p>
     </main>
     <template id="model-config-template">

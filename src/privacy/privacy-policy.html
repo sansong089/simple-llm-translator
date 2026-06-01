@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple LLM Translator 隐私政策</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "Segoe UI", "PingFang SC", sans-serif;
+        line-height: 1.6;
+      }
+
+      body {
+        margin: 0;
+        background: #f6f8fb;
+        color: #1f2937;
+      }
+
+      main {
+        max-width: 840px;
+        margin: 0 auto;
+        padding: 32px 20px 48px;
+      }
+
+      h1,
+      h2 {
+        color: #0f172a;
+      }
+
+      section {
+        background: #ffffff;
+        border: 1px solid #d8e0ea;
+        border-radius: 14px;
+        padding: 20px 22px;
+        margin-top: 16px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+      }
+
+      p,
+      li {
+        margin: 0 0 10px;
+      }
+
+      ul {
+        padding-left: 20px;
+        margin: 0;
+      }
+
+      code {
+        font-family: Consolas, "Courier New", monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Simple LLM Translator 隐私政策</h1>
+      <p>生效日期：2026-06-01</p>
+      <section>
+        <h2>1. 插件做什么</h2>
+        <p>Simple LLM Translator 是一个由用户手动触发的网页翻译插件。只有当你点击“翻译当前页面”或“翻译选中文本”时，插件才会处理当前网页中的可见文本。</p>
+      </section>
+      <section>
+        <h2>2. 会处理哪些数据</h2>
+        <ul>
+          <li>你在设置页中填写的模型服务配置，例如 <code>Base URL</code>、<code>API Key</code>、模型名和目标语言。</li>
+          <li>你手动触发翻译时选中的文本，或当前页面中被翻译功能选中的可见文本片段。</li>
+          <li>插件运行所需的基础状态，例如当前页面是否正在翻译。</li>
+        </ul>
+      </section>
+      <section>
+        <h2>3. 数据如何使用</h2>
+        <ul>
+          <li>网页文本只会发送到你自己配置的模型服务商，用于生成翻译结果。</li>
+          <li>插件不会把网页文本发送到插件作者服务器。</li>
+          <li>插件不会把网页翻译内容持久化保存到 <code>chrome.storage.local</code>。</li>
+        </ul>
+      </section>
+      <section>
+        <h2>4. 本地存储</h2>
+        <p>插件会把你的模型配置和必要设置保存在浏览器扩展本地存储中，以便下次继续使用。该存储用于功能配置，不用于长期保存网页翻译原文或模型返回内容。</p>
+      </section>
+      <section>
+        <h2>5. 共享与披露</h2>
+        <p>除了你主动配置的模型服务商外，插件不会把网页文本共享给其他第三方。是否进一步存储、记录或训练，由你选择的模型服务商决定，请同时阅读对应服务商的隐私政策。</p>
+      </section>
+      <section>
+        <h2>6. 你的控制权</h2>
+        <ul>
+          <li>你可以随时停止页面翻译。</li>
+          <li>你可以随时修改或删除模型服务配置。</li>
+          <li>你可以在浏览器扩展管理界面移除本插件，以清除插件本地存储的数据。</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

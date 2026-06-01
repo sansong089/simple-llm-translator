@@ -5,3 +5,9 @@ dist/
 .playwright/
 .playwright-cli/
 output/
+*.log
+.env
+.env.*
+.vscode/
+.idea/
+*.tsbuildinfo
